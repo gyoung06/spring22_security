@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-5.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="loginSuccessHandler" class="com.jhta.spring22.sec.LoginSuccessHandler"></bean>
+<!-- security-config.xml -->
+	<!-- 요청에 따른 권한을 설정하는 부분임 -->
+	<sec:http>
+		<!-- 모두 접근 가능 -->
+		<sec:intercept-url pattern="/all" access="permitAll"/>
+		<sec:intercept-url pattern="/member" access="hasRole('ROLE_MEMBER')"/>
+		<sec:intercept-url pattern="/admin" access="hasRole('ROLE_ADMIN')"/>
+		<sec:form-login login-page="/login" authentication-success-handler-ref="loginSuccessHandler"/>
+		<sec:logout logout-url="/logout" invalidate-session="true" logout-success-url="/"/>
+		<sec:form-login/>
+	</sec:http>
+	<!-- 인증매니저설정 -->
+	<sec:authentication-manager>
+		<sec:authentication-provider>
+			<sec:user-service>
+				<!-- {noop} 암호화인코더를 사용하지 않을 때 쓴다. -->
+				<sec:user name="member" password="{noop}1111" authorities="ROLE_MEMBER"/>
+				<sec:user name="admin" password="{noop}2222" authorities="ROLE_ADMIN"/>
+			</sec:user-service> 
+		</sec:authentication-provider>	
+	</sec:authentication-manager>
+</beans>
